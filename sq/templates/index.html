@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Semiconductors
+{% endblock %}
+
+{% block body %}
+
+<form action="{{ url_for('count') }}" method="post">
+
+    <div class="form-group">
+        <select class="form-control" name="semiconductor_id">
+            {% for semiconductor in semiconductors %}
+                <option value="{{ semiconductor.id }}">{{ semiconductor.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <select class="form-control" name="type">
+                <option value=True>Acceptor</option>
+                <option value=False>Donor</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <input class="form-control" name="concentration" placeholder="Concentratin of impurities">
+    </div>
+    <div class="form-group">
+        <input class="form-control" name="Ea" placeholder="Activation energy">
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Count</button>
+    </div>
+
+</form>
+{% endblock %}

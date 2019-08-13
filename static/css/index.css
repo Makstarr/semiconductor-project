@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container > div {
+  margin: 20px;
+}
+
+.menu{
+
+  list-style-type: none;
+  width: 8%;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+  left:0;
+  top: 0;
+}
+li a
+{
+  display: block;
+  color: #000;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+
+li a.active
+{
+background-color: skyblue;
+color: white;
+text-decoration: none;}
+
+li a:hover:not(.active) {
+   background-color: #555;
+   color: white;
+   text-decoration: none;
+ }
+ @media screen and (max-width: 560px) {
+   .menu{
+     font-size:0.4rem;
+     width:8%;
+   }
+   li a
+   {
+     padding: 4px 8px;
+   }
+ }
