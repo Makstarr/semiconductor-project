@@ -1,43 +1,45 @@
-from flask import Flask, session, render_template, request, redirect, url_for, jsonify
-from flask_session import Session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from flask import Flask, render_template, jsonify, request
+from models import *
 from count import *
+from sqlalchemy import and_
 import os
+import math, decimal
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://ewrsgiutbrhrwo:517f2f57b484be1b55cf9529a2918fea0264322eb94fd63a0a0363e6a5ba9cb8@ec2-54-247-189-1.eu-west-1.compute.amazonaws.com:5432/d6kq1fgt1cafb7"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
 
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
 
-app.static_folder = 'static'
 @app.route("/")
 def index():
-    class1 = 'class=active'
-    return render_template("index.html", class1="class=active")
-@app.route("/pn-junction")
-def pnjunction():
-    class2 = 'class=active'
-    return render_template("projects/pn-junction.html",class2=class2)
-@app.route("/npn-junction")
-def npnjunction():
-    class3 = 'class=active'
-    return render_template("projects/npn-junction.html",class3=class3)
-
-@app.route("/<string:action>", methods=["POST", "GET"])
-def count(action):
+    semiconductors = Semiconductor.query.all()
+    return render_template("index.html", semiconductors=semiconductors)
+@app.route("/count", methods=["POST","GET"])
+def count():
+    """Count"""
     if request.method == "GET":
-        return render_template("count.html")
+        semiconductors = Semiconductor.query.all()
+        return render_template("index.html",semiconductors=semiconductors )
     if request.method == "POST":
-        name  = request.form.get("name")
-        temperature  = int(request.form.get("temperature"))
-        concentration  = request.form.get("concentration")
-        type  = request.form.get("type")
-        sq = sqr(temperature)
-        for x in sq:
-            db.execute("INSERT INTO count (name,type,temperature,concentration, sqrt) VALUES (:name, :type, :temperature, :concentration, :sqrt)", {"name": name, "type": type, "temperature": temperature, "concentration": concentration, "sqrt":x})
-        db.commit()
-
-
-        counts = db.execute("SELECT name, type, temperature, concentration, sqrt FROM count").fetchall()
-        return render_template("results.html",  counts=counts)
+        # Get form information.
+        semiconductor_id = request.form.get("semiconductor_id")
+        name = Semiconductor.query.filter_by(id=semiconductor_id).first().name
+        concentration = float(request.form.get("concentration"))
+        Ea = float(request.form.get("Ea"))
+        type = request.form.get("type")
+        start = 5
+        end = 1000
+        # Add parameters
+        if Parameters.query.filter(and_(Parameters.name == name, Parameters.concentration == concentration, Parameters.type == type, Parameters.Ea == str(Ea))).count()!= 0:
+            parameters = Parameters.query.filter(and_(Parameters.name == name, Parameters.concentration == concentration, Parameters.type == type)).order_by(Parameters.temperature).all()
+            return render_template("results.html", parameters=parameters)
+        else:
+            for temperature in range(start, end, 5):
+                F, n, lnn, ni, reverse_temp, Eg, Fi, mu = parameters_count(temperature, name, concentration, Ea, bool(type))
+                E=str(Ea)
+                par = Parameters(type = type, Ea=Ea, temperature= temperature, reverse_temp = reverse_temp, F = F, Fi = Fi, lnn = lnn, ni=ni, n=n, Eg = Eg,  mu = mu, name=name, concentration=concentration)
+                db.session.add(par)
+            db.session.commit()
+            parameters = Parameters.query.filter(and_(Parameters.name == name, Parameters.concentration == concentration, Parameters.type == type)).all()
+            return render_template("results.html", parameters=parameters, type = bool(type))

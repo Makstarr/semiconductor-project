@@ -1,26 +1,36 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% block heading %}
-    {% endblock %}
-    <meta charset="utf-8">
-    <title> Main page </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link  type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
-  </head>
-  <body>
-      <ul class = "menu">
-        <li><a {{ class1 }} href="{{ url_for('index') }}">Home</a></li>
-        <li><a {{ class2 }} href="{{ url_for('pnjunction') }}">P-N junction</a></li>
-        <li><a {{ class3 }} href="{{ url_for('npnjunction') }}">N-P-N junction</a></li>
-      </ul>
-      <div >
-      {% block body %}
-      {% endblock %}
-    </div>
-    <script src="{{ url_for('static', filename='js/npn.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pn.js') }}"></script>
+{% extends "layout.html" %}
 
-  </body>
-</html>
+{% block title %}
+    Рассчет параметров полупроводников
+{% endblock %}
+{% block head %}
+<h1>Рассчет параметров полупроводников</h1>
+{% endblock %}
+{% block body %}
+<div class="index ">
+    <form action="{{ url_for('count') }}" method="post">
+        <div class="form-group">
+            <select class="form-control" name="semiconductor_id">
+                {% for semiconductor in semiconductors %}
+                    <option value="{{ semiconductor.id }}">{{ semiconductor.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="type">
+                    <option value=True>Акцептор</option>
+                    <option value=False>Донор</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="concentration" placeholder="Концентрация примеси: 4е16">
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="Ea" placeholder="Энергия активации примеси">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" id="submit-btn">Принять</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
