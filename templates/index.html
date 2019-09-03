@@ -8,6 +8,31 @@
 {% endblock %}
 {% block body %}
 <div class="index ">
+  <div class="error-message">
+    <p style="color:red, text-align:center;">{{error}}</p>
+  </div>
+  <table class="table" style="border-bottom: 1px solid #D9DEE2;">
+    <thead class="thead-dark" >
+      <th scope="col"> Материал </th>
+      <th scope="col"> mdn </th>
+      <th scope="col"> mdp</th>
+      <th scope="col"> Диэлектрическая проницаемость</th>
+      <th scope="col"> Подвижность электронов при 300К</th>
+      <th scope="col"> Подвижность дырок при 300К</th>
+    </thead>
+    <tbody>
+    {% for semiconductor in semiconductors %}
+        <tr>
+          <td>{{semiconductor.name}}</td>
+          <td>{{semiconductor.m_dn}}</td>
+          <td>{{semiconductor.m_dp}}</td>
+          <td>{{semiconductor.epsilon}}</td>
+          <td>{{semiconductor.mu_n_300 }}</td>
+          <td>{{semiconductor.mu_p_300 }}</td>
+        </tr>
+  {% endfor %}
+  </tbody>
+  </table>
     <form action="{{ url_for('count') }}" method="post">
         <div class="form-group">
             <select class="form-control" name="semiconductor_id">
@@ -18,8 +43,8 @@
         </div>
         <div class="form-group">
             <select class="form-control" name="type">
-                    <option value=True>Акцептор</option>
-                    <option value=False>Донор</option>
+                    <option value=1>Акцептор</option>
+                    <option value=0>Донор</option>
             </select>
         </div>
         <div class="form-group">
@@ -27,6 +52,15 @@
         </div>
         <div class="form-group">
             <input class="form-control" name="Ea" placeholder="Энергия активации примеси">
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="min-temp" min="5" max="1100"  placeholder="Начальная температура (от 5К)">
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="max-temp" min="5" max="1100" placeholder="Конечная температура (до 1000К)">
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="step" min="5" max="1000" placeholder="Шаг">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary" id="submit-btn">Принять</button>

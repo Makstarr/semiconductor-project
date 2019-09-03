@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Результаты
+{% endblock %}
+{% block head %}
+<h1>Таблица результатов</h1>
+{% endblock %}
+{% block body %}
+  <table class="table" >
+    <thead class="thead-dark" >
+      <th scope="col"> T </th>
+      <th scope="col"> 1/T </th>
+      {% if TIP  > 0 %}
+      <th scope="col"> p </th>
+      <th scope="col"> ln(p) </th>
+      {% else %}
+      <th scope="col"> n </th>
+      <th scope="col"> ln(n) </th>
+      {% endif %}
+      <th scope="col"> ni </th>
+      <th scope="col"> Eg  </th>
+      {% if TIP > 1  %}
+      <th scope="col"> Fi-Ei </th>
+      <th scope="col"> F-Ev </th>
+      {% else %}
+      <th scope="col"> Fi-Ei </th>
+      <th scope="col"> Ec-F </th>
+      {% endif %}
+      <th scope="col"lk> mu </th>
+    </thead>
+      <tbody>
+  {% for parameter in parameters %}
+        <tr>
+          <td>{{parameter.temperature}}</td>
+          <td>{{parameter.reverse_temp}}</td>
+          <td>{{parameter.n}}</td>
+          <td>{{parameter.lnn}}</td>
+          <td>{{parameter.ni }}</td>
+          <td>{{parameter.Eg }}</td>
+          <td>{{parameter.Fi}}</td>
+          <td>{{parameter.F}}</td>
+          <td>{{parameter.mu}}</td>
+        </tr>
+  {% endfor %}
+      </tbody>
+  </table>
+
+{% endblock %}

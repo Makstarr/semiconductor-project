@@ -1,7 +1,5 @@
 :root {
-
   --form-bg-color: linear-gradient(rgb(91, 95, 113) 33%, rgba(156,159,176,1) 100%);
-
   --btn-color:  #3366ff;
 }
 
@@ -32,7 +30,7 @@
 #head h1{
   text-align: center;
   color: white;
-  
+
 }
 #head{
   background-color: rgb(91, 95, 113);
